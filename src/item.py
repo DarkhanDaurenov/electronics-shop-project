@@ -29,6 +29,14 @@ class Item:
     def __str__(self):
         return f"{self.name}"
 
+
+    def __add__(self, other):
+        if isinstance(other, Item):
+            return self.quantity + other.quantity
+        else:
+            raise TypeError
+
+
     @property
     def name(self) -> str:
         return self._name
@@ -52,9 +60,7 @@ class Item:
         """
         Применяет установленную скидку для конкретного товара.
         """
-        self.price = self.pay_rate * self.price
-
-
+        self.price = (self.pay_rate * self.price)
 
 
     @classmethod
