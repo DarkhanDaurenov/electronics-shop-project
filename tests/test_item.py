@@ -1,7 +1,7 @@
 """Здесь надо написать тесты с использованием pytest для модуля item."""
 import pytest
 
-from src.item import Item
+from src.item import Item, InstantiateCSVError, string_to_number
 
 def test_calculate_total_price():
     item = Item("Тестовый товар", 10.0, 5)
@@ -64,3 +64,23 @@ def test_add_(item_1, item_2):
 def test_add_mistake(item_1):
     with pytest.raises(TypeError):
         assert item_1 + 30
+
+
+def test_string_to_number():
+    assert string_to_number("10.5") == 10
+
+def test_instantiate_from_csv_file_not_found(tmp_path):
+    # Создаем временный файл, который не будет существовать
+    FILE = tmp_path / "item.csv"
+    with pytest.raises(FileNotFoundError):
+        Item.DATA_DIR = FILE
+        Item.instantiate_from_csv()
+
+def test_instantiate_from_csv_file_corrupted(tmp_path):
+    # Создаем временный файл с неполными данными
+    FILE = tmp_path / "item.csv"
+    with open(FILE, "w") as csvfile:
+        csvfile.write("name,price\napple,1.2\nbanana,0.5")  # Отсутствует столбец quantity
+    with pytest.raises(InstantiateCSVError):
+        Item.DATA_DIR = FILE
+        Item.instantiate_from_csv()
