@@ -1,6 +1,9 @@
 import csv
 from settings import FILE
 
+class InstantiateCSVError(Exception):
+    pass
+
 class Item:
     """
     Класс для представления товара в магазине.
@@ -65,17 +68,24 @@ class Item:
 
     @classmethod
     def instantiate_from_csv(cls):
-        with cls.DATA_DIR.open('r', encoding='cp1251', newline='') as csvfile:
-            reader = csv.DictReader(csvfile)
-            cls.all.clear()
-            for row in reader:
-                name = row['name']
-                price = row['price']
-                quantity = row['quantity']
-                cls(name, price, quantity)
-            return cls
+        try:
+            with cls.DATA_DIR.open('r', encoding='cp1251', newline='') as csvfile:
+                reader = csv.DictReader(csvfile)
+                cls.all.clear()
+                for row in reader:
+                    try:
+                        name = row['name']
+                        price = row['price']
+                        quantity = row['quantity']
+                        cls(name, price, quantity)
+                    except KeyError:
+                        raise InstantiateCSVError("Файл item.csv поврежден")
+        except FileNotFoundError:
+            raise FileNotFoundError("Отсутствует файл item.csv")
+        return cls
 
-    @staticmethod
-    def string_to_number(param):
-        return int(float(param))
+
+
+def string_to_number(param):
+    return int(float(param))
 
