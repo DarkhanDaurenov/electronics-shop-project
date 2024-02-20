@@ -7,9 +7,6 @@ class Mixinboard:
     def language(self):
         return self._language
 
-    @language.setter
-    def language(self, value):
-        self._language = value.upper()
 
     def change_lang(self):
         if self._language == 'RU':
