@@ -21,9 +21,9 @@ class Mixinboard:
 class Keyboard(Item, Mixinboard):
     """Дочерний класс для добавления товара"""
 
-    def __init__(self, name, price, quantity, language='EN'):
+    def __init__(self, name, price, quantity):
         super().__init__(name, price, quantity)
-        self._language = language
+
 
 
 
